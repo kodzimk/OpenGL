@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\System\Obj_Loader.cpp" />
     <ClCompile Include="src\System\Camera.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -33,6 +34,7 @@
     <None Include="src\Shaders\vertex_shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\System\Obj_Loader.h" />
     <ClInclude Include="src\external\stb_image.h" />
     <ClInclude Include="src\System\Camera.h" />
     <ClInclude Include="src\external\config.h" />
