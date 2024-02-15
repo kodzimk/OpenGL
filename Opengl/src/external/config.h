@@ -205,3 +205,38 @@ enum STATE {
     RUN = 2,
     ATTACK = 3
 };
+
+struct Box {
+    float front, back, top, bottom, left, right;
+};
+
+bool boxCollision(Box box1, Box box2) {
+    bool xCollision = box1.right >= box2.left && box1.left <= box2.right;
+    bool yCollision = box1.top >= box2.bottom && box1.bottom <= box2.top;
+    bool zCollision = box1.front >= box2.back && box1.back <= box2.front;
+
+    return xCollision && yCollision && zCollision;
+}
+
+bool collision(glm::vec3 playerPosition,glm::vec3 objectPosition,float widthOfPlayer,float heightOfPlayer, float depthOfPlayer,
+    float widthofobject,float heightofobject,float depthOfObject)
+{
+    Box box1;
+    Box box2;
+    
+    box1.top = playerPosition.y + heightOfPlayer / 2;
+    box1.bottom = playerPosition.y - heightOfPlayer / 2;
+    box1.front = playerPosition.z + depthOfPlayer / 2;
+    box1.back = playerPosition.z - depthOfPlayer / 2;
+    box1.left = playerPosition.x - widthOfPlayer / 2;
+    box1.right = playerPosition.x + widthOfPlayer / 2;
+
+    box2.top = objectPosition.y + heightofobject / 2;
+    box2.bottom = objectPosition.y - heightofobject / 2;
+    box2.front = objectPosition.z + depthOfObject / 2;
+    box2.back = objectPosition.z - depthOfObject / 2;
+    box2.left = objectPosition.x - widthofobject / 2;
+    box2.right = objectPosition.x + widthofobject / 2;
+
+   return boxCollision(box1, box2);
+}

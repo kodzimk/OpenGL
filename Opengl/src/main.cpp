@@ -5,6 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include"external/stb_image.h"
 
+
 int main(void)
 {
     GLFWwindow* window;
@@ -98,11 +99,13 @@ int main(void)
 
 
     glm::mat4 blockMatrix = glm::mat4(1.0f);
-    blockMatrix = glm::translate(blockMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+    blockMatrix = glm::translate(blockMatrix, glm::vec3(0.0f, 1.0f, 0.0f));
 
     glm::mat4 quadMatrix = glm::mat4(1.0f);
     quadMatrix = glm::translate(quadMatrix, glm::vec3(0.0f,-1.0f,0.0f));
-    quadMatrix = glm::scale(quadMatrix, glm::vec3(5.0f,1.0f, 5.0f));
+
+    glm::mat4 quadMatrix2 = glm::mat4(1.0f);
+    quadMatrix2 = glm::translate(quadMatrix, glm::vec3(0.0f, 1.0f, 0.0f));
 
     Camera camera(SRC_WIDTH,SRC_HEIGHT,glm::vec3(0.0f,2.0f,2.0f),0.0f);
 
@@ -128,6 +131,8 @@ int main(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 
+        std::cout << collision(glm::vec3(0.0f, 1.0f,0.0f), glm::vec3(0.0f, -1.0f, 0.0f),1.0f,1.0f,1.0f,1.0f,1.0f,1.0f) << std::endl;
+
 
         glUseProgram(program);
         glBindVertexArray(obj.VAOs[0]);
@@ -144,6 +149,14 @@ int main(void)
         glBindTexture(GL_TEXTURE_2D, container);
         camera.Matrix(quadProgram, "playerMatrix");
         glUniformMatrix4fv(glGetUniformLocation(quadProgram, "model"), 1, GL_FALSE, glm::value_ptr(quadMatrix));
+        glDrawArrays(GL_TRIANGLES, 0, 110);
+
+        glUseProgram(quadProgram);
+        glBindVertexArray(VAO);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, container);
+        camera.Matrix(quadProgram, "playerMatrix");
+        glUniformMatrix4fv(glGetUniformLocation(quadProgram, "model"), 1, GL_FALSE, glm::value_ptr(quadMatrix2));
         glDrawArrays(GL_TRIANGLES, 0, 110);
      
         glfwSwapBuffers(window);
