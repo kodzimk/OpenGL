@@ -34,6 +34,8 @@
     <None Include="src\Shaders\shadow_fragment.frag" />
     <None Include="src\Shaders\quad_vertex.vert" />
     <None Include="src\Shaders\quad_fragment.frag" />
+    <None Include="src\Shaders\instance_fragment_shader.frag" />
+    <None Include="src\Shaders\instance_vertex_shader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\external\config.h">

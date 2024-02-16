@@ -31,6 +31,16 @@ int main(void)
     if (glewInit() != GLEW_OK)
         return -1;
 
+    for (int i = 0; i < 50; i++)
+    {
+        float x, z;
+        x = float(i);
+        z = i;
+        glm::mat4 matrix= glm::mat4(1.0f);
+        matrix = glm::translate(matrix, glm::vec3(i, 0.0f, 0.0f));
+        matrixs.push_back(matrix);
+    }
+
     unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -49,10 +59,55 @@ int main(void)
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
     glEnableVertexAttribArray(2);
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+
+
+
+    unsigned int instanceVAO, instanceVBO, instanceIBO;
+    glGenVertexArrays(1, &instanceVAO);
+    glGenBuffers(1, &instanceVBO);
+    glGenBuffers(1, &instanceIBO);
+    glBindVertexArray(instanceVAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
+    glEnableVertexAttribArray(2);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceIBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * matrixs.size(), matrixs.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
+    glEnableVertexAttribArray(3);
+
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 1));
+    glEnableVertexAttribArray(4);
+
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 2));
+    glEnableVertexAttribArray(5);
+
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 3));
+    glEnableVertexAttribArray(6);
+
+
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribDivisor(5, 1);
+    glVertexAttribDivisor(6, 1);
 
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
 
 
     unsigned int quadVAO, quadVBO;
@@ -73,7 +128,7 @@ int main(void)
     glBindVertexArray(0);
 
     unsigned int program = CreateProgram("src/Shaders/vertex_shader.vert", "src/Shaders/fragment_shader.frag");
-    unsigned int shadowMap = CreateProgram("src/Shaders/shadow_vertex.vert", "src/Shaders/shadow_fragment.frag");
+    unsigned int instanceProgram = CreateProgram("src/Shaders/instance_vertex_shader.vert", "src/Shaders/instance_fragment_shader.frag");
     unsigned int frameBufferProgram = CreateProgram("src/Shaders/framebuffer_vertex.vert", "src/Shaders/framebuffer_fragment.frag");
 
     int width, height, channels;
@@ -139,6 +194,11 @@ int main(void)
     glUseProgram(program);
     glUniform3f(glGetUniformLocation(program, "lightPos"), 0.0f, 0.0f, -1.0f);
     glUniform1i(glGetUniformLocation(program, "diffuseTexture"), 1);
+
+
+    glUseProgram(instanceProgram);
+    glUniform3f(glGetUniformLocation(instanceProgram, "lightPos"), 0.0f, 0.0f, -1.0f);
+    glUniform1i(glGetUniformLocation(instanceProgram, "diffuseTexture"), 0);
 
     glUseProgram(frameBufferProgram);
     glUniform1i(glGetUniformLocation(frameBufferProgram, "screenTexture"), 2);
@@ -210,18 +270,12 @@ int main(void)
         glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(blockMatrix));
         glDrawArrays(GL_TRIANGLES, 0, obj.size);
 
-    
-        glBindVertexArray(VAO);
+        glUseProgram(instanceProgram);
+        glBindVertexArray(instanceVAO);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, container);
-        camera.Matrix(program, "playerMatrix");
-        glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(quadMatrix));
-        glDrawArrays(GL_TRIANGLES, 0, 110);
-
-        glBindVertexArray(VAO);
-        glBindTexture(GL_TEXTURE_2D, container);
-        camera.Matrix(program, "playerMatrix");
-        glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(quadMatrix2));
-        glDrawArrays(GL_TRIANGLES, 0, 110);
+        camera.Matrix(instanceProgram, "playerMatrix");
+        glDrawArraysInstanced(GL_TRIANGLES, 0, sizeof(vertices1)/sizeof(float), 50);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDisable(GL_DEPTH_TEST);

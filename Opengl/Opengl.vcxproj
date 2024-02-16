@@ -24,6 +24,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Shaders\instance_fragment_shader.frag" />
     <None Include="src\Shaders\fragment_shader.frag" />
     <None Include="src\Shaders\frameBuffer_fragment.frag" />
     <None Include="src\Shaders\frameBuffer_vertex.vert" />
@@ -32,6 +33,7 @@
     <None Include="src\Shaders\shadow_fragment.frag" />
     <None Include="src\Shaders\shadow_vertex.vert" />
     <None Include="src\Shaders\vertex_shader.vert" />
+    <None Include="src\Shaders\instance_vertex_shader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\System\Obj_Loader.h" />

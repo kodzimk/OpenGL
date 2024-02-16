@@ -206,6 +206,11 @@ enum STATE {
     ATTACK = 3
 };
 
+
+
+
+std::vector<glm::mat4> matrixs;
+
 struct Box {
     float front, back, top, bottom, left, right;
 };
