@@ -1,5 +1,8 @@
 #include<GL/glew.h>
 #include<GLFW/glfw3.h>
+#include"imgui.h"
+#include"imgui_impl_glfw.h"
+#include"imgui_impl_opengl3.h"
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
@@ -37,7 +40,7 @@ public:
 	// Exports the camera matrix to a shader
 	void Matrix(unsigned int ID, const char* uniform);
 	// Handles camera inputs
-	void Inputs(GLFWwindow* window);
+	void Inputs(GLFWwindow* window,ImGuiIO& io);
 
     
 };

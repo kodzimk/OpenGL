@@ -17,119 +17,26 @@ int main(void)
 
     if (!glfwInit())
         return -1;
+ 
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-    window = glfwCreateWindow(SRC_WIDTH, SRC_HEIGHT, "Hello World", NULL, NULL);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //line added to force decoration but has no effect
+
+    window = glfwCreateWindow(mode->width, mode->height, "Simple example", NULL, nullptr); //create window in fullscreen
+
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
-
   
     glfwMakeContextCurrent(window);
 
     if (glewInit() != GLEW_OK)
         return -1;
 
-    for (int i = 0; i < 50; i++)
-    {
-        float x, z;
-        x = float(i);
-        z = i;
-        glm::mat4 matrix= glm::mat4(1.0f);
-        matrix = glm::translate(matrix, glm::vec3(i, 0.0f, 0.0f));
-        matrixs.push_back(matrix);
-    }
-
-    unsigned int VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1),vertices1 , GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
-    glEnableVertexAttribArray(1);
-
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
-    glEnableVertexAttribArray(2);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-
-
-    unsigned int instanceVAO, instanceVBO, instanceIBO;
-    glGenVertexArrays(1, &instanceVAO);
-    glGenBuffers(1, &instanceVBO);
-    glGenBuffers(1, &instanceIBO);
-    glBindVertexArray(instanceVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 6));
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void*)(sizeof(float) * 3));
-    glEnableVertexAttribArray(2);
-
-    glBindBuffer(GL_ARRAY_BUFFER, instanceIBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * matrixs.size(), matrixs.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0);
-    glEnableVertexAttribArray(3);
-
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 1));
-    glEnableVertexAttribArray(4);
-
-    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 2));
-    glEnableVertexAttribArray(5);
-
-    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * 3));
-    glEnableVertexAttribArray(6);
-
-
-    glVertexAttribDivisor(3, 1);
-    glVertexAttribDivisor(4, 1);
-    glVertexAttribDivisor(5, 1);
-    glVertexAttribDivisor(6, 1);
-
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-
-
-    unsigned int quadVAO, quadVBO;
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (void*)(sizeof(float) * 2));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
     unsigned int program = CreateProgram("src/Shaders/vertex_shader.vert", "src/Shaders/fragment_shader.frag");
-    unsigned int instanceProgram = CreateProgram("src/Shaders/instance_vertex_shader.vert", "src/Shaders/instance_fragment_shader.frag");
-    unsigned int frameBufferProgram = CreateProgram("src/Shaders/framebuffer_vertex.vert", "src/Shaders/framebuffer_fragment.frag");
 
     int width, height, channels;
     stbi_set_flip_vertically_on_load(true);
@@ -155,39 +62,8 @@ int main(void)
 
     stbi_image_free(data);
 
-       data = stbi_load(
-        "res/texture/container.jpg", &width, &height, &channels, STBI_rgb_alpha);
-
-
-    unsigned int container;
-    glGenTextures(1, &container);
-
-    glBindTexture(GL_TEXTURE_2D, container);
-
-
-    glTexImage2D(GL_TEXTURE_2D,
-        0, GL_RGB, width, height, 0,
-        GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(data);
-
-
-
-
     glm::mat4 blockMatrix = glm::mat4(1.0f);
     blockMatrix = glm::translate(blockMatrix, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    glm::mat4 quadMatrix = glm::mat4(1.0f);
-    quadMatrix = glm::translate(quadMatrix, glm::vec3(0.0f,-1.0f,0.0f));
-
-    glm::mat4 quadMatrix2 = glm::mat4(1.0f);
-    quadMatrix2 = glm::translate(quadMatrix, glm::vec3(2.0f, 1.0f, 0.0f));
 
     Camera camera(SRC_WIDTH,SRC_HEIGHT,glm::vec3(0.0f,2.0f,2.0f),0.0f);
 
@@ -195,59 +71,6 @@ int main(void)
     glUniform3f(glGetUniformLocation(program, "lightPos"), 0.0f, 0.0f, -1.0f);
     glUniform1i(glGetUniformLocation(program, "diffuseTexture"), 1);
 
-
-    glUseProgram(instanceProgram);
-    glUniform3f(glGetUniformLocation(instanceProgram, "lightPos"), 0.0f, 0.0f, -1.0f);
-    glUniform1i(glGetUniformLocation(instanceProgram, "diffuseTexture"), 0);
-
-    glUseProgram(frameBufferProgram);
-    glUniform1i(glGetUniformLocation(frameBufferProgram, "screenTexture"), 2);
-
-
-    unsigned int FBO;
-    glGenFramebuffers(1, &FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
-    unsigned int fboTexture;
-    glGenTextures(1, &fboTexture);
-    glBindTexture(GL_TEXTURE_2D, fboTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SRC_WIDTH, SRC_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fboTexture, NULL);
-
-    unsigned int RBO;
-    glGenRenderbuffers(1, &RBO);
-    glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SRC_WIDTH, SRC_HEIGHT);
-    glFramebufferRenderbuffer(GL_TEXTURE_2D, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    unsigned int SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
-
-    unsigned int depthMapFBO;
-    glGenFramebuffers(1, &depthMapFBO);
-    
-    unsigned int depthMapTexture;
-    glGenTextures(1, &depthMapTexture);
-    glBindTexture(GL_TEXTURE_2D, depthMapTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture, 0);
-    glReadBuffer(GL_NONE);
-    glDrawBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT_FACE);
-    glFrontFace(GL_CCW);
 
     Obj_Loader obj;
     bool my_tool_active = false;
@@ -259,11 +82,18 @@ int main(void)
     ImGui::StyleColorsDark();
     ImGui_ImplOpenGL3_Init();
 
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT_FACE);
+    glFrontFace(GL_CCW);
+
+    ImVec2 windowedModeRes = ImVec2(mode->width, mode->height);
+    glm::vec3 angles = glm::vec3(0.0f, 0.0f, 0.0f);
+
         while (!glfwWindowShouldClose(window))
         {
          
 
-            camera.Inputs(window);
+            camera.Inputs(window,io);
             camera.updateMatrix(45.f, 0.1f, 100.f);
 
             glEnable(GL_DEPTH_TEST);
@@ -285,11 +115,35 @@ int main(void)
 
             ImGui::NewFrame(); 
 
-            ImGui::Begin("Window A");
-            ImGui::Text("This is window A");
-            ImGui::Text("This is window b");
-            ImGui::End();
+            ImGui::Begin("niger",NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+        
+            ImGui::SetWindowPos(ImVec2(0, 0));
+            ImGui::SetWindowSize(ImVec2(windowedModeRes.x * 0.15, windowedModeRes.y*0.6));
+            ImGui::SetWindowCollapsed(false);
 
+            std::string x = "X: " + std::to_string(angles.x);
+            std::string y = "Y: " + std::to_string(angles.y);
+            std::string z = "Z: " + std::to_string(angles.z);
+            ImGui::Text(x.c_str());
+            ImGui::Text(y.c_str());
+            ImGui::Text(z.c_str());
+         
+   
+            if (ImGui::Button("play", ImVec2(windowedModeRes.x * 0.15 * 0.4, windowedModeRes.y * 0.4 * 0.2)))
+            {
+                blockMatrix = glm::rotate(blockMatrix, 90.f, glm::vec3(1.0f, 0.0f, 0.0f));
+                angles.x += 90.f;
+                if (angles.x >= 360.f)
+                    angles.x = angles.x - 360.f;
+            }
+
+            if (ImGui::Button("previous", ImVec2(windowedModeRes.x * 0.15 * 0.4, windowedModeRes.y * 0.4 * 0.2)))
+            {
+              glfwSetWindowMonitor(window, nullptr, 400, 300, mode->width*0.5, mode->height * 0.5, GLFW_DONT_CARE);
+              windowedModeRes = ImVec2(mode->width * 0.5, mode->height * 0.5);
+            }
+
+            ImGui::End();
             ImGui::Render();
             ImGui::EndFrame(); 
 
@@ -299,9 +153,6 @@ int main(void)
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-
-    glDeleteBuffers(1, &VBO);
-    glDeleteVertexArrays(1,&VAO);
 
     glfwTerminate();
     return 0;

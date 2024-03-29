@@ -30,9 +30,17 @@ void Camera::Matrix(unsigned int shader, const char* uniform)
 	glUniformMatrix4fv(glGetUniformLocation(shader, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
+bool MyLowLevelMouseButtonHandler(ImGuiIO& io, int button, bool down)
+{
+
+	if (!io.WantCaptureMouse)
+		return true;
+
+	return false;
+}
 
 
-void Camera::Inputs(GLFWwindow* window)
+void Camera::Inputs(GLFWwindow* window,ImGuiIO& io)
 {
 	// Handles key inputs
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -70,7 +78,7 @@ void Camera::Inputs(GLFWwindow* window)
 
 
 	// Handles mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS&&MyLowLevelMouseButtonHandler(io,GLFW_MOUSE_BUTTON_LEFT, true))
 	{
 		// Hides mouse cursor
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
