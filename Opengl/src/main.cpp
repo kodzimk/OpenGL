@@ -245,51 +245,60 @@ int main(void)
     glDrawBuffer(GL_NONE);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    STATE state = STATE::IDLE;
-    Obj_Loader obj;
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT_FACE);
+    glFrontFace(GL_CCW);
 
+    Obj_Loader obj;
+    bool my_tool_active = false;
     obj.make_obj_mesh("res/object/gameloft tasm 2.obj", blockMatrix);
 
-    while (!glfwWindowShouldClose(window))
-    {
-        camera.Inputs(window);
-        camera.updateMatrix(45.f, 0.1f, 100.f);
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui::StyleColorsDark();
+    ImGui_ImplOpenGL3_Init();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-        glEnable(GL_DEPTH_TEST);
-       
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+        while (!glfwWindowShouldClose(window))
+        {
+         
 
-        glUseProgram(program);
-        glBindVertexArray(obj.VAOs[0]);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glUniform3f(glGetUniformLocation(program, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-        camera.Matrix(program, "playerMatrix");
-        glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(blockMatrix));
-        glDrawArrays(GL_TRIANGLES, 0, obj.size);
+            camera.Inputs(window);
+            camera.updateMatrix(45.f, 0.1f, 100.f);
 
-        glUseProgram(instanceProgram);
-        glBindVertexArray(instanceVAO);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, container);
-        camera.Matrix(instanceProgram, "playerMatrix");
-        glDrawArraysInstanced(GL_TRIANGLES, 0, sizeof(vertices1)/sizeof(float), 50);
+            glEnable(GL_DEPTH_TEST);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
-        glUseProgram(frameBufferProgram);
-        glBindVertexArray(quadVAO);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, fboTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-     
-        glfwSwapBuffers(window);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 
-        
-        glfwPollEvents();
-    }
+            glUseProgram(program);
+            glBindVertexArray(obj.VAOs[0]);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, texture1);
+            glUniform3f(glGetUniformLocation(program, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+            camera.Matrix(program, "playerMatrix");
+            glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(blockMatrix));
+            glDrawArrays(GL_TRIANGLES, 0, obj.size);
+
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+
+            ImGui::NewFrame(); 
+
+            ImGui::Begin("Window A");
+            ImGui::Text("This is window A");
+            ImGui::Text("This is window b");
+            ImGui::End();
+
+            ImGui::Render();
+            ImGui::EndFrame(); 
+
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+           
+    
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
 
     glDeleteBuffers(1, &VBO);
     glDeleteVertexArrays(1,&VAO);
