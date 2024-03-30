@@ -40,7 +40,7 @@ public:
 	// Exports the camera matrix to a shader
 	void Matrix(unsigned int ID, const char* uniform);
 	// Handles camera inputs
-	void Inputs(GLFWwindow* window,ImGuiIO& io);
+	void Inputs(GLFWwindow* window,ImGuiIO io);
 
     
 };

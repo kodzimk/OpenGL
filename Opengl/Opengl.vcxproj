@@ -59,6 +59,11 @@
     <ClInclude Include="src\System\Camera.h" />
     <ClInclude Include="src\external\config.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.vcxproj">
+      <Project>{1289e52d-84b8-405e-87ca-3703596ba4a2}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -112,10 +117,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)imgui-master\imgui-master\;$(ProjectDir)imgui-master\imgui-master\backends\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)imgui-master\imgui-master\;$(ProjectDir)imgui-master\imgui-master\backends\;$(IncludePath);$(SolutionDir)Engine\src</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)imgui-master\imgui-master\;$(ProjectDir)imgui-master\imgui-master\backends\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)imgui-master\imgui-master\;$(ProjectDir)imgui-master\imgui-master\backends\;$(IncludePath);$(SolutionDir)Engine\src</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Engine\src</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;$(SolutionDir)Engine\src</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

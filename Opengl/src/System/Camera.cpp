@@ -1,5 +1,5 @@
 #include "Camera.h"
-
+#include<iostream>
 
 Camera::Camera(int width, int height, glm::vec3 position, float distance)
 {
@@ -34,13 +34,16 @@ bool MyLowLevelMouseButtonHandler(ImGuiIO& io, int button, bool down)
 {
 
 	if (!io.WantCaptureMouse)
+	{
 		return true;
-
+		
+	}
+	std::cout << "sasa";
 	return false;
 }
 
 
-void Camera::Inputs(GLFWwindow* window,ImGuiIO& io)
+void Camera::Inputs(GLFWwindow* window,ImGuiIO ioRef)
 {
 	// Handles key inputs
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -78,7 +81,7 @@ void Camera::Inputs(GLFWwindow* window,ImGuiIO& io)
 
 
 	// Handles mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS&&MyLowLevelMouseButtonHandler(io,GLFW_MOUSE_BUTTON_LEFT, true))
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS&&MyLowLevelMouseButtonHandler(ioRef,GLFW_MOUSE_BUTTON_LEFT,true))
 	{
 		// Hides mouse cursor
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);

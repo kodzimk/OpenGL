@@ -76,11 +76,6 @@ int main(void)
     bool my_tool_active = false;
     obj.make_obj_mesh("res/object/gameloft tasm 2.obj", blockMatrix);
 
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui::StyleColorsDark();
-    ImGui_ImplOpenGL3_Init();
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_FRONT_FACE);
@@ -89,11 +84,14 @@ int main(void)
     ImVec2 windowedModeRes = ImVec2(mode->width, mode->height);
     glm::vec3 angles = glm::vec3(0.0f, 0.0f, 0.0f);
 
+    transformPort port(window);
+    ImGui::SetCurrentContext(port.cntx);
+
         while (!glfwWindowShouldClose(window))
         {
          
 
-            camera.Inputs(window,io);
+            camera.Inputs(window,*port.ioRef);
             camera.updateMatrix(45.f, 0.1f, 100.f);
 
             glEnable(GL_DEPTH_TEST);
@@ -109,45 +107,8 @@ int main(void)
             camera.Matrix(program, "playerMatrix");
             glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(blockMatrix));
             glDrawArrays(GL_TRIANGLES, 0, obj.size);
-
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-
-            ImGui::NewFrame(); 
-
-            ImGui::Begin("niger",NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-        
-            ImGui::SetWindowPos(ImVec2(0, 0));
-            ImGui::SetWindowSize(ImVec2(windowedModeRes.x * 0.15, windowedModeRes.y*0.6));
-            ImGui::SetWindowCollapsed(false);
-
-            std::string x = "X: " + std::to_string(angles.x);
-            std::string y = "Y: " + std::to_string(angles.y);
-            std::string z = "Z: " + std::to_string(angles.z);
-            ImGui::Text(x.c_str());
-            ImGui::Text(y.c_str());
-            ImGui::Text(z.c_str());
-         
-   
-            if (ImGui::Button("play", ImVec2(windowedModeRes.x * 0.15 * 0.4, windowedModeRes.y * 0.4 * 0.2)))
-            {
-                blockMatrix = glm::rotate(blockMatrix, 90.f, glm::vec3(1.0f, 0.0f, 0.0f));
-                angles.x += 90.f;
-                if (angles.x >= 360.f)
-                    angles.x = angles.x - 360.f;
-            }
-
-            if (ImGui::Button("previous", ImVec2(windowedModeRes.x * 0.15 * 0.4, windowedModeRes.y * 0.4 * 0.2)))
-            {
-              glfwSetWindowMonitor(window, nullptr, 400, 300, mode->width*0.5, mode->height * 0.5, GLFW_DONT_CARE);
-              windowedModeRes = ImVec2(mode->width * 0.5, mode->height * 0.5);
-            }
-
-            ImGui::End();
-            ImGui::Render();
-            ImGui::EndFrame(); 
-
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            port.render(window);
+          
            
     
             glfwSwapBuffers(window);

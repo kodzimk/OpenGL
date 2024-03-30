@@ -1,0 +1,5 @@
+
+
+namespace Blaze {
+	void print();
+}
