@@ -5,6 +5,27 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include"external/stb_image.h"
 
+struct vec2 {
+    float x, y;
+};
+
+static vec2 cursorPositionCallback(GLFWwindow* window, double xPos, double yPos)
+{
+
+    glm::vec3 win(xPos, yPos, 0);
+    glm::vec4 viewport(0, 0, SRC_WIDTH, SRC_HEIGHT);
+
+    glm::vec3 realpos = glm::unProject(win, glm::mat4(1.0f), glm::mat4(1.0f), viewport);
+
+    GLfloat worldSpacex = -realpos.x;
+    GLfloat worldSpacey = -realpos.y;
+    vec2 coord;
+    coord.x = worldSpacex;
+    coord.y = worldSpacey;
+
+    return coord;
+}
+
 
 int main(void)
 {
@@ -18,12 +39,16 @@ int main(void)
     if (!glfwInit())
         return -1;
  
+
     const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //line added to force decoration but has no effect
 
     window = glfwCreateWindow(mode->width, mode->height, "Simple example", NULL, nullptr); //create window in fullscreen
+
+    #define SRC_WIDTH  mode->width
+    #define SRC_HEIGHT  mode->height
 
     if (!window)
     {
@@ -63,7 +88,7 @@ int main(void)
     stbi_image_free(data);
 
     glm::mat4 blockMatrix = glm::mat4(1.0f);
-    blockMatrix = glm::translate(blockMatrix, glm::vec3(0.0f, 1.0f, 0.0f));
+    blockMatrix = glm::translate(blockMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
 
     Camera camera(SRC_WIDTH,SRC_HEIGHT,glm::vec3(0.0f,2.0f,2.0f),0.0f);
 
@@ -73,23 +98,48 @@ int main(void)
 
 
     Obj_Loader obj;
-    bool my_tool_active = false;
     obj.make_obj_mesh("res/object/gameloft tasm 2.obj", blockMatrix);
 
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT_FACE);
-    glFrontFace(GL_CCW);
-
-    ImVec2 windowedModeRes = ImVec2(mode->width, mode->height);
     glm::vec3 angles = glm::vec3(0.0f, 0.0f, 0.0f);
 
     transformPort port(window);
-    ImGui::SetCurrentContext(port.cntx);
+    ImGui::SetCurrentContext(port.cntx);    
+    ImGui_ImplGlfw_CursorEnterCallback(window, true);
+    std::string name = "";
+    double x = 0, y = 0;
+
+    double prevTime = 0.0;
+    double crntTime = 0.0;
+    double timeDiff;
+    // Keeps track of the amount of frames in timeDiff
+    unsigned int counter = 0;
+    glfwSwapInterval(0);
 
         while (!glfwWindowShouldClose(window))
         {
-         
+            vec2 niger = cursorPositionCallback(window, x, y);
+
+            if(glfwGetKey(window,GLFW_KEY_1) == GLFW_PRESS)
+            std::cout << niger.x << "    " << niger.y << std::endl;
+
+            crntTime = glfwGetTime();
+            timeDiff = crntTime - prevTime;
+            counter++;
+
+            if (timeDiff >= 1.0 / 30.0)
+            {
+                // Creates new title
+                int FPS = (1.0 / timeDiff) * counter;
+      ;
+                 port.fps = FPS;
+                // Resets times and counter
+                prevTime = crntTime;
+                counter = 0;
+
+                // Use this if you have disabled VSync
+                //camera.Inputs(window);
+            }
+
 
             camera.Inputs(window,*port.ioRef);
             camera.updateMatrix(45.f, 0.1f, 100.f);
@@ -107,10 +157,12 @@ int main(void)
             camera.Matrix(program, "playerMatrix");
             glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(blockMatrix));
             glDrawArrays(GL_TRIANGLES, 0, obj.size);
-            port.render(window);
-          
+
+
+             port.render(window);
            
-    
+          
+       
             glfwSwapBuffers(window);
             glfwPollEvents();
         }

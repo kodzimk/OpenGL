@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\Entity.cpp" />
     <ClCompile Include="imgui-master\imgui-master\backends\imgui_impl_dx12.cpp" />
     <ClCompile Include="imgui-master\imgui-master\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="imgui-master\imgui-master\backends\imgui_impl_opengl3.cpp" />
@@ -45,6 +46,7 @@
     <None Include="src\Shaders\instance_vertex_shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\Entity.h" />
     <ClInclude Include="imgui-master\imgui-master\backends\imgui_impl_dx12.h" />
     <ClInclude Include="imgui-master\imgui-master\backends\imgui_impl_glfw.h" />
     <ClInclude Include="imgui-master\imgui-master\backends\imgui_impl_opengl3.h" />

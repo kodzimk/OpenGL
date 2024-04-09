@@ -30,7 +30,7 @@ void Camera::Matrix(unsigned int shader, const char* uniform)
 	glUniformMatrix4fv(glGetUniformLocation(shader, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
 }
 
-bool MyLowLevelMouseButtonHandler(ImGuiIO& io, int button, bool down)
+bool MyLowLevelMouseButtonHandler(GLFWwindow *window,ImGuiIO& io, int button)
 {
 
 	if (!io.WantCaptureMouse)
@@ -81,7 +81,7 @@ void Camera::Inputs(GLFWwindow* window,ImGuiIO ioRef)
 
 
 	// Handles mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS&&MyLowLevelMouseButtonHandler(ioRef,GLFW_MOUSE_BUTTON_LEFT,true))
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS&&MyLowLevelMouseButtonHandler(window,ioRef, GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		// Hides mouse cursor
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
@@ -119,7 +119,7 @@ void Camera::Inputs(GLFWwindow* window,ImGuiIO ioRef)
 		// Sets mouse cursor to the middle of the screen so that it doesn't end up roaming around
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 	{
 		// Unhides cursor since camera is not looking around anymore
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
@@ -127,3 +127,7 @@ void Camera::Inputs(GLFWwindow* window,ImGuiIO ioRef)
 		firstClick = true;
 	}
 	}
+
+
+
+

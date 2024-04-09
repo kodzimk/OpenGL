@@ -15,6 +15,7 @@ public:
 public:
 	ImGuiContext* cntx;
 	ImGuiIO* ioRef;
+	int fps;
 
 
 };

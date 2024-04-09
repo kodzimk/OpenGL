@@ -75,8 +75,10 @@ static ShaderProgramSource ParseShaders(const std::string& filepath, const std::
 }
 
 
-#define SRC_WIDTH 800
-#define SRC_HEIGHT 600
+#define SRC_WIDTH 1000
+#define SRC_HEIGHT 800
+
+
 
 float vertices1[] = {
        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f,

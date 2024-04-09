@@ -41,6 +41,7 @@ public:
 	void Matrix(unsigned int ID, const char* uniform);
 	// Handles camera inputs
 	void Inputs(GLFWwindow* window,ImGuiIO io);
+	const char* getNameOfObject(GLFWwindow* window);
 
     
 };
