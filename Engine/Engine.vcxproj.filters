@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\window\transformPort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,6 +43,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="imgui-master\imgui-master\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

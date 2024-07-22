@@ -45,7 +45,7 @@ int main(void)
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
     glfwWindowHint(GLFW_DECORATED, GLFW_TRUE); //line added to force decoration but has no effect
 
-    window = glfwCreateWindow(mode->width, mode->height, "Simple example", NULL, nullptr); //create window in fullscreen
+    window = glfwCreateWindow(mode->width, mode->height, "Simple example", NULL, nullptr); //creat
 
     #define SRC_WIDTH  mode->width
     #define SRC_HEIGHT  mode->height
@@ -158,11 +158,8 @@ int main(void)
             glUniformMatrix4fv(glGetUniformLocation(program, "model"), 1, GL_FALSE, glm::value_ptr(blockMatrix));
             glDrawArrays(GL_TRIANGLES, 0, obj.size);
 
-
              port.render(window);
            
-          
-       
             glfwSwapBuffers(window);
             glfwPollEvents();
         }

@@ -48,19 +48,19 @@ void Camera::Inputs(GLFWwindow* window,ImGuiIO ioRef)
 	// Handles key inputs
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		Position +=  speed * Orientation;
+		Position += 0.01f *  speed * Orientation;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		Position +=  speed * -glm::normalize(glm::cross(Orientation, Up));
+		Position += 0.01f * speed * -glm::normalize(glm::cross(Orientation, Up));
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		Position +=   speed * -Orientation;
+		Position += 0.01f * speed * -Orientation;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		Position +=   speed * glm::normalize(glm::cross(Orientation, Up));
+		Position += 0.01f * speed * glm::normalize(glm::cross(Orientation, Up));
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
